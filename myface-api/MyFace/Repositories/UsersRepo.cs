@@ -2,6 +2,9 @@
 using System.Linq;
 using MyFace.Models.Database;
 using MyFace.Models.Request;
+using System.Security.Cryptography;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using System;
 
 namespace MyFace.Repositories
 {
@@ -14,7 +17,7 @@ namespace MyFace.Repositories
         User Update(int id, UpdateUserRequest update);
         void Delete(int id);
     }
-    
+
     public class UsersRepo : IUsersRepo
     {
         private readonly MyFaceDbContext _context;
@@ -23,17 +26,20 @@ namespace MyFace.Repositories
         {
             _context = context;
         }
-        
+
         public IEnumerable<User> Search(UserSearchRequest search)
         {
             return _context.Users
-                .Where(p => search.Search == null || 
-                            (
-                                p.FirstName.ToLower().Contains(search.Search) ||
-                                p.LastName.ToLower().Contains(search.Search) ||
-                                p.Email.ToLower().Contains(search.Search) ||
-                                p.Username.ToLower().Contains(search.Search)
-                            ))
+                .Where(
+                    p =>
+                        search.Search == null
+                        || (
+                            p.FirstName.ToLower().Contains(search.Search)
+                            || p.LastName.ToLower().Contains(search.Search)
+                            || p.Email.ToLower().Contains(search.Search)
+                            || p.Username.ToLower().Contains(search.Search)
+                        )
+                )
                 .OrderBy(u => u.Username)
                 .Skip((search.Page - 1) * search.PageSize)
                 .Take(search.PageSize);
@@ -41,33 +47,56 @@ namespace MyFace.Repositories
 
         public int Count(UserSearchRequest search)
         {
-            return _context.Users
-                .Count(p => search.Search == null || 
-                            (
-                                p.FirstName.ToLower().Contains(search.Search) ||
-                                p.LastName.ToLower().Contains(search.Search) ||
-                                p.Email.ToLower().Contains(search.Search) ||
-                                p.Username.ToLower().Contains(search.Search)
-                            ));
+            return _context.Users.Count(
+                p =>
+                    search.Search == null
+                    || (
+                        p.FirstName.ToLower().Contains(search.Search)
+                        || p.LastName.ToLower().Contains(search.Search)
+                        || p.Email.ToLower().Contains(search.Search)
+                        || p.Username.ToLower().Contains(search.Search)
+                    )
+            );
         }
 
         public User GetById(int id)
         {
-            return _context.Users
-                .Single(user => user.Id == id);
+            return _context.Users.Single(user => user.Id == id);
         }
 
         public User Create(CreateUserRequest newUser)
         {
-            var insertResponse = _context.Users.Add(new User
+            byte[] salt = new byte[128 / 8];
+            string rawPassword = newUser.Password;
+
+            using (var rngCsp = new RNGCryptoServiceProvider())
             {
-                FirstName = newUser.FirstName,
-                LastName = newUser.LastName,
-                Email = newUser.Email,
-                Username = newUser.Username,
-                ProfileImageUrl = newUser.ProfileImageUrl,
-                CoverImageUrl = newUser.CoverImageUrl,
-            });
+                rngCsp.GetNonZeroBytes(salt);
+            }
+
+            // derive a 256-bit subkey (use HMACSHA256 with 100,000 iterations)
+            string hashedPassword = Convert.ToBase64String(
+                KeyDerivation.Pbkdf2(
+                    password: rawPassword,
+                    salt: salt,
+                    prf: KeyDerivationPrf.HMACSHA256,
+                    iterationCount: 100000,
+                    numBytesRequested: 256 / 8
+                )
+            );
+            var insertResponse = _context.Users.Add(
+                new User
+                {
+                    FirstName = newUser.FirstName,
+                    LastName = newUser.LastName,
+                    Email = newUser.Email,
+                    HashedPassword = hashedPassword,
+                    Salt = salt,
+                    Username = newUser.Username,
+                    ProfileImageUrl = newUser.ProfileImageUrl,
+                    CoverImageUrl = newUser.CoverImageUrl,
+                }
+            );
             _context.SaveChanges();
 
             return insertResponse.Entity;

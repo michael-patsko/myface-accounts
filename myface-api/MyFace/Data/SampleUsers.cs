@@ -170,9 +170,8 @@ namespace MyFace.Data
 
         private static User CreateRandomUser(int index)
         {
-            PasswordGenerator passwordGenerator = new PasswordGenerator();
-
-            string rawPassword = passwordGenerator.CreatePasswordFrom(index);
+            // PasswordGenerator passwordGenerator = new PasswordGenerator();
+            string rawPassword = "password123";
             byte[] salt = new byte[128 / 8];
 
             using (var rngCsp = new RNGCryptoServiceProvider())
@@ -196,8 +195,8 @@ namespace MyFace.Data
                 FirstName = Data[index][0],
                 LastName = Data[index][1],
                 Username = Data[index][2],
-                hashedPassword = hashedPassword,
-                salt = salt,
+                HashedPassword = hashedPassword,
+                Salt = salt,
                 Email = Data[index][3],
                 ProfileImageUrl = ImageGenerator.GetProfileImage(Data[index][2]),
                 CoverImageUrl = ImageGenerator.GetCoverImage(index),
