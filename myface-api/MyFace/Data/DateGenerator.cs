@@ -14,11 +14,13 @@ namespace MyFace.Data
             var randomMinsAgo = Random.Next(1, MaxInteractionAge);
             return DateTime.Now.AddMinutes(-1 * (MaxInteractionAge + randomMinsAgo));
         }
-        
+
         public static DateTime GetInteractionDate()
         {
             var randomMinsAgo = Random.Next(1, MaxInteractionAge);
             return DateTime.Now.AddMinutes(-1 * randomMinsAgo);
         }
+
+        public static string GetPassword() { }
     }
 }
