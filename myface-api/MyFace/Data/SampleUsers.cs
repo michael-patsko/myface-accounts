@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MyFace.Models.Database;
+using System.Security.Cryptography;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using System;
 
 namespace MyFace.Data
 {
@@ -41,14 +44,32 @@ namespace MyFace.Data
             new List<string> { "Aurora", "Feedham", "afeedhams", "afeedhams@house.gov" },
             new List<string> { "Farly", "Chestney", "fchestneyt", "fchestneyt@usda.gov" },
             new List<string> { "Chico", "Guilloux", "cguillouxu", "cguillouxu@senate.gov" },
-            new List<string> { "Julianna", "Huckstepp", "jhucksteppv", "jhucksteppv@ycombinator.com" },
+            new List<string>
+            {
+                "Julianna",
+                "Huckstepp",
+                "jhucksteppv",
+                "jhucksteppv@ycombinator.com"
+            },
             new List<string> { "Bev", "Sancto", "bsanctow", "bsanctow@spiegel.de" },
             new List<string> { "Shara", "Jeeves", "sjeevesx", "sjeevesx@behance.net" },
             new List<string> { "Legra", "Jereatt", "ljereatty", "ljereatty@prnewswire.com" },
             new List<string> { "Katey", "Ternouth", "kternouthz", "kternouthz@webmd.com" },
             new List<string> { "Val", "McMenamin", "vmcmenamin10", "vmcmenamin10@noaa.gov" },
-            new List<string> { "Shannan", "Greenhalf", "sgreenhalf11", "sgreenhalf11@gravatar.com" },
-            new List<string> { "Sterling", "Fellgate", "sfellgate12", "sfellgate12@surveymonkey.com" },
+            new List<string>
+            {
+                "Shannan",
+                "Greenhalf",
+                "sgreenhalf11",
+                "sgreenhalf11@gravatar.com"
+            },
+            new List<string>
+            {
+                "Sterling",
+                "Fellgate",
+                "sfellgate12",
+                "sfellgate12@surveymonkey.com"
+            },
             new List<string> { "Brina", "Dickens", "bdickens13", "bdickens13@zimbio.com" },
             new List<string> { "Boniface", "McKaile", "bmckaile14", "bmckaile14@jalbum.net" },
             new List<string> { "Vincenty", "Aishford", "vaishford15", "vaishford15@wordpress.org" },
@@ -70,12 +91,36 @@ namespace MyFace.Data
             new List<string> { "Pasquale", "Surplice", "psurplice1l", "psurplice1l@paypal.com" },
             new List<string> { "Tim", "Dyott", "tdyott1m", "tdyott1m@yellowbook.com" },
             new List<string> { "Tedd", "Connachan", "tconnachan1n", "tconnachan1n@so-net.ne.jp" },
-            new List<string> { "Jacquetta", "McClelland", "jmcclelland1o", "jmcclelland1o@nifty.com" },
+            new List<string>
+            {
+                "Jacquetta",
+                "McClelland",
+                "jmcclelland1o",
+                "jmcclelland1o@nifty.com"
+            },
             new List<string> { "Nelli", "Maund", "nmaund1p", "nmaund1p@myspace.com" },
             new List<string> { "Morie", "Anselmi", "manselmi1q", "manselmi1q@nytimes.com" },
-            new List<string> { "Gabie", "Antoniazzi", "gantoniazzi1r", "gantoniazzi1r@dailymail.co.uk" },
-            new List<string> { "Menard", "Engelbrecht", "mengelbrecht1s", "mengelbrecht1s@over-blog.com" },
-            new List<string> { "Mike", "Tommasetti", "mtommasetti1t", "mtommasetti1t@bluehost.com" },
+            new List<string>
+            {
+                "Gabie",
+                "Antoniazzi",
+                "gantoniazzi1r",
+                "gantoniazzi1r@dailymail.co.uk"
+            },
+            new List<string>
+            {
+                "Menard",
+                "Engelbrecht",
+                "mengelbrecht1s",
+                "mengelbrecht1s@over-blog.com"
+            },
+            new List<string>
+            {
+                "Mike",
+                "Tommasetti",
+                "mtommasetti1t",
+                "mtommasetti1t@bluehost.com"
+            },
             new List<string> { "Eldin", "Fredy", "efredy1u", "efredy1u@mozilla.com" },
             new List<string> { "Pris", "McCowen", "pmccowen1v", "pmccowen1v@jalbum.net" },
             new List<string> { "Joey", "Dossettor", "jdossettor1w", "jdossettor1w@webnode.com" },
@@ -91,7 +136,13 @@ namespace MyFace.Data
             new List<string> { "Lyell", "Ashard", "lashard26", "lashard26@umn.edu" },
             new List<string> { "Darren", "Devons", "ddevons27", "ddevons27@economist.com" },
             new List<string> { "Warden", "Undrell", "wundrell28", "wundrell28@mozilla.org" },
-            new List<string> { "Iris", "Langworthy", "ilangworthy29", "ilangworthy29@timesonline.co.uk" },
+            new List<string>
+            {
+                "Iris",
+                "Langworthy",
+                "ilangworthy29",
+                "ilangworthy29@timesonline.co.uk"
+            },
             new List<string> { "Marten", "Minards", "mminards2a", "mminards2a@statcounter.com" },
             new List<string> { "Kerry", "Bennion", "kbennion2b", "kbennion2b@spotify.com" },
             new List<string> { "Olivette", "Norridge", "onorridge2c", "onorridge2c@cpanel.net" },
@@ -111,7 +162,7 @@ namespace MyFace.Data
             new List<string> { "Jane", "Iceton", "jiceton2q", "jiceton2q@lulu.com" },
             new List<string> { "Marjy", "Beadell", "mbeadell2r", "mbeadell2r@delicious.com" }
         };
-        
+
         public static IEnumerable<User> GetUsers()
         {
             return Enumerable.Range(0, NumberOfUsers).Select(CreateRandomUser);
@@ -119,11 +170,34 @@ namespace MyFace.Data
 
         private static User CreateRandomUser(int index)
         {
+            PasswordGenerator passwordGenerator = new PasswordGenerator();
+
+            string rawPassword = passwordGenerator.CreatePasswordFrom(index);
+            byte[] salt = new byte[128 / 8];
+
+            using (var rngCsp = new RNGCryptoServiceProvider())
+            {
+                rngCsp.GetNonZeroBytes(salt);
+            }
+
+            // derive a 256-bit subkey (use HMACSHA256 with 100,000 iterations)
+            string hashedPassword = Convert.ToBase64String(
+                KeyDerivation.Pbkdf2(
+                    password: rawPassword,
+                    salt: salt,
+                    prf: KeyDerivationPrf.HMACSHA256,
+                    iterationCount: 100000,
+                    numBytesRequested: 256 / 8
+                )
+            );
+
             return new User
             {
                 FirstName = Data[index][0],
                 LastName = Data[index][1],
                 Username = Data[index][2],
+                hashedPassword = hashedPassword,
+                salt = salt,
                 Email = Data[index][3],
                 ProfileImageUrl = ImageGenerator.GetProfileImage(Data[index][2]),
                 CoverImageUrl = ImageGenerator.GetCoverImage(index),

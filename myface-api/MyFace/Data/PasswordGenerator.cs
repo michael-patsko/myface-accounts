@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MyFace.Data
 {
-    public static class PasswordGenerator
+    public class PasswordGenerator
     {
         private static readonly List<string> Data = new List<string>()
         {
@@ -117,7 +117,7 @@ namespace MyFace.Data
             return Data[index];
         }
 
-        private static string CreatePasswordFrom(int index)
+        public string CreatePasswordFrom(int index)
         {
             return Data[index];
         }
