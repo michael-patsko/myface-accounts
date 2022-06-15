@@ -20,7 +20,5 @@ namespace MyFace.Data
             var randomMinsAgo = Random.Next(1, MaxInteractionAge);
             return DateTime.Now.AddMinutes(-1 * randomMinsAgo);
         }
-
-        public static string GetPassword() { }
     }
 }
