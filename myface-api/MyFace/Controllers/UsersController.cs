@@ -2,6 +2,7 @@
 using MyFace.Models.Request;
 using MyFace.Models.Response;
 using MyFace.Repositories;
+using System;
 
 namespace MyFace.Controllers
 {
@@ -15,7 +16,14 @@ namespace MyFace.Controllers
         {
             _users = users;
         }
-        
+
+        private readonly UsersRepo usersRepo;
+
+        public UsersController(UsersRepo users)
+        {
+            usersRepo = users;
+        }
+
         [HttpGet("")]
         public ActionResult<UserListResponse> Search([FromQuery] UserSearchRequest searchRequest)
         {
@@ -38,7 +46,7 @@ namespace MyFace.Controllers
             {
                 return BadRequest(ModelState);
             }
-            
+
             var user = _users.Create(newUser);
 
             var url = Url.Action("GetById", new { id = user.Id });
@@ -47,7 +55,10 @@ namespace MyFace.Controllers
         }
 
         [HttpPatch("{id}/update")]
-        public ActionResult<UserResponse> Update([FromRoute] int id, [FromBody] UpdateUserRequest update)
+        public ActionResult<UserResponse> Update(
+            [FromRoute] int id,
+            [FromBody] UpdateUserRequest update
+        )
         {
             if (!ModelState.IsValid)
             {
@@ -57,7 +68,7 @@ namespace MyFace.Controllers
             var user = _users.Update(id, update);
             return new UserResponse(user);
         }
-        
+
         [HttpDelete("{id}")]
         public IActionResult Delete([FromRoute] int id)
         {
